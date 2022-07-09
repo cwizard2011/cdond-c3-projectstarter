@@ -158,8 +158,8 @@ jobs:
               \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-                --output text >> project/.circleci/ansible/inventory.txt
-      - run: cat project/.circleci/ansible/inventory.txt
+                --output text >> ~/project/.circleci/ansible/inventory.txt
+      - run: cat ~/project/.circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
@@ -177,7 +177,7 @@ jobs:
       - add_ssh_keys:
           fingerprints: ["bd:31:c2:dc:01:72:00:55:08:65:77:1d:7d:fd:4b:ee"]
       - attach_workspace:
-          at: project/.circleci/ansible/inventory.txt
+          at: ~/project/.circleci/ansible/inventory.txt
       - run:
           name: Install dependencies
           command: |
