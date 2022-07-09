@@ -162,7 +162,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - project
+            - project/.circleci/ansible/inventory.txt
       - destroy-environment:
           stack-name:  "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
       - destroy-environment:
@@ -172,11 +172,11 @@ jobs:
     docker:
       - image: python:3.7-alpine3.16
     steps:
-      # - checkout
+      - attach_workspace:
+          at: ~/project/.circleci/ansible/inventory.txt
+      - checkout
       - add_ssh_keys:
           fingerprints: ["bd:31:c2:dc:01:72:00:55:08:65:77:1d:7d:fd:4b:ee"]
-      - attach_workspace:
-          at: ~/project
       - run: cat ~/project/.circleci/ansible/inventory.txt
       - run:
           name: Install dependencies
