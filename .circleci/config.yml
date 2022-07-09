@@ -157,7 +157,7 @@ jobs:
             aws ec2 describe-instances \
               \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                --filters "Name=tag:project,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+                --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --output text >> .circleci/ansible/inventory.txt
       - run: cat .circleci/ansible/inventory.txt
       - persist_to_workspace:
@@ -166,6 +166,8 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       - destroy-environment:
           stack-name:  "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
+      - destroy-environment:
+          stack-name:  "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
 
 #   configure-infrastructure:
 #     docker:
