@@ -39,4 +39,4 @@
     # Add more env vars here
 
   roles:
-    - install-packages
+    - configure-server
