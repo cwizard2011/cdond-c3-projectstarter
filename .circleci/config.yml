@@ -4,14 +4,16 @@ commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-      stack-name:
+      workflow-id:
         type: string  
     steps:
       - run:
           name: Destroy environments
           when: on_fail
           command: |
-            aws cloudformation delete-stack --stack-name <<parameters.stack-name>>
+            aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
+            aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflow_id>>
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.workflow_id>>
 
 #   revert-migrations:
 #     description: Revert the last migration if successfully run in the current workflow.
@@ -151,7 +153,6 @@ jobs:
               --tags project=udapeople \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-      - run: mkdir ~/workspace
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -159,15 +160,13 @@ jobs:
               \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-                --output text >> ~/workspace/inventory.txt
+                --output text >> ~/project/.circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
-            - workspace/inventory.txt
+            - project/.circleci/ansible/inventory.txt
       - destroy-environment:
-          stack-name:  "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
-      - destroy-environment:
-          stack-name:  "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow-id:  $CIRCLE_WORKFLOW_ID:0:7
 
   configure-infrastructure:
     docker:
@@ -175,16 +174,14 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/workspace/inventory.txt
-      - run: cat ~/workspace/inventory.txt
+          at: ~/
+      - run: cat ~/project/.circleci/ansible/inventory.txt
       - add_ssh_keys:
           fingerprints: ["bd:31:c2:dc:01:72:00:55:08:65:77:1d:7d:fd:4b:ee"]
       - run:
           name: Install dependencies
           command: |
             apk add --update ansible
-            apk add --upgrade tar
-            apk add --upgrade gzip
             pip install awscli
       - run:
           name: Configure server
@@ -192,9 +189,7 @@ jobs:
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment:
-          stack-name:  "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
-      - destroy-environment:
-          stack-name:  "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"   
+          workflow-id:  $CIRCLE_WORKFLOW_ID:0:7  
 
 #   run-migrations:
 #     docker:
