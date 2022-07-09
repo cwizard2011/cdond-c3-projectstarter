@@ -172,23 +172,23 @@ jobs:
     docker:
       - image: python:3.7-alpine3.16
     steps:
+      - checkout
       - attach_workspace:
           at: ~/project/.circleci/ansible/inventory.txt
-      - checkout
       - add_ssh_keys:
           fingerprints: ["bd:31:c2:dc:01:72:00:55:08:65:77:1d:7d:fd:4b:ee"]
-      - run: cat ~/project/.circleci/ansible/inventory.txt
       - run:
           name: Install dependencies
           command: |
             apk add --update ansible
             apk add --upgrade tar
             apk add --upgrade gzip
-            apk add --no-cache aws-cli
+            pip install awscli
       - run:
           name: Configure server
           command: |
             cd .circleci/ansible
+            cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment:
           stack-name:  "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
