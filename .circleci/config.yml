@@ -23,10 +23,11 @@ commands:
     steps:
       - run:
           name: Revert migrations
+          when: on_fail
           # Add when this will run
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = curl --insecure https://kvdb.io/Av2gLHMmaQRinmszBBonh2/migration_<<parameters.workflow-id>>
+            SUCCESS = $(curl --insecure https://kvdb.io/Av2gLHMmaQRinmszBBonh2/migration_<<parameters.workflow-id>>)
             if(( $SUCCESS==1 )); 
             then
               cd ~/project/backend
@@ -202,6 +203,12 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+            pip install awscli
+            apk add --update --no-cache tar gzip nodejs npm ansible curl
+      - run:
           name: Run migrations
           command: |
             cd backend
@@ -216,7 +223,9 @@ jobs:
               curl --insecure https://kvdb.io/Av2gLHMmaQRinmszBBonh2/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       - revert-migrations:
-          workflow-id:  $CIRCLE_WORKFLOW_ID:0:7 
+          workflow-id:  $CIRCLE_WORKFLOW_ID:0:7
+      - destroy-environment:
+          workflow-id:  $CIRCLE_WORKFLOW_ID:0:7  
      # Here's where you will add some code to rollback on failure      
 
   deploy-frontend:
