@@ -302,8 +302,7 @@ jobs:
           command: |
             cd backend
             echo " I want to start installing>>>"
-            npm i --legacy-peer-deps
-            npm audit fix --force
+            npm i
             echo " I want to start building>>>"
             npm run build
             echo "I run the build successfully"
