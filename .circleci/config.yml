@@ -205,7 +205,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+            curl --insecure https://bootstrap.pypa.io/pip/3.5/get-pip.py -o get-pip.py
             python3 get-pip.py
             python3 --version
             pip --version
