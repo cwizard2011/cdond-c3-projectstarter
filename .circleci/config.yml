@@ -240,13 +240,15 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yum install wget tar -y
-            wget https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
-            tar xzf Python-3.9.6.tgz
-            ./configure --enable-optimizations
-            make altinstall
-            rm -f /opt/Python-3.9.6.tgz
-            # your code here
+            python --version
+            python3 --version
+            # yum install wget tar -y
+            # wget https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
+            # tar xzf Python-3.9.6.tgz
+            # ./configure --enable-optimizations
+            # make altinstall
+            # rm -f /opt/Python-3.9.6.tgz
+            # # your code here
       - attach_workspace:
           at: ~/
       - run:
@@ -401,31 +403,31 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
-      - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          filters:
-            branches:
-              only: [test-feature-branch]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
-      - smoke-test:
-          requires: [deploy-backend, deploy-frontend]
+      # - build-frontend
+      # - build-backend
+      # - test-frontend:
+      #     requires: [build-frontend]
+      # - test-backend:
+      #     requires: [build-backend]
+      # - scan-backend:
+      #     requires: [build-backend]
+      # - scan-frontend:
+      #     requires: [build-frontend]
+      # - deploy-infrastructure:
+      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      #     filters:
+      #       branches:
+      #         only: [test-feature-branch]
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
+      - deploy-frontend
+      #     requires: [run-migrations]
+      # - deploy-backend:
+      #     requires: [run-migrations]
+      # - smoke-test:
+      #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
       #     requires: [smoke-test]
       # - cleanup:
