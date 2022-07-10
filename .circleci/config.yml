@@ -237,8 +237,6 @@ jobs:
       - checkout
       - restore_cache:
           keys: [frontend-build]
-      - attach_workspace:
-          at: ~/
       - run:
           name: Install dependencies
           command: |
@@ -249,6 +247,8 @@ jobs:
             make altinstall
             rm -f /opt/Python-3.9.6.tgz
             # your code here
+      - attach_workspace:
+          at: ~/
       - run:
           name: Get backend url
           command: |
