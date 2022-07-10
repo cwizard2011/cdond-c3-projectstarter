@@ -14,12 +14,16 @@
   apt:
     autoremove: yes
 
-- name: "install dependencies."
+- name: install node
   become: true
-  apt:
-    name: ["nodejs", "npm"]
-    state: latest
-    update_cache: yes
+  shell: |
+    curl -sL https://deb.nodesource.com/setup_14.x | -E bash - && apt-get install -y nodejs
+# - name: "install dependencies."
+#   become: true
+#   apt:
+#     name: ["nodejs", "npm"]
+#     state: latest
+#     update_cache: yes
 
 - name: "install pm2"
   become: yes
@@ -41,9 +45,15 @@
     src: artifact.tar.gz
     dest: /home/ubuntu/backend
 
+- name: "Prestart server running"
+  become: true
+  command: npm run prestart:prod
+  args:
+    chdir: /home/ubuntu/backend
+
 - name: "Start backend server"
   become: true
-  command: pm2 start npm -- start
+  command: pm2 start dist/main.js
   args:
     chdir: /home/ubuntu/backend
   # shell: |
