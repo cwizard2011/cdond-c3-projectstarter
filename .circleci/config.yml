@@ -304,7 +304,6 @@ jobs:
             echo " I want to start installing>>>"
             npm i --force
             echo " I want to start building>>>"
-            npm audit fix --force
             npm run build --force
             echo "I run the build successfully"
             cd ..
