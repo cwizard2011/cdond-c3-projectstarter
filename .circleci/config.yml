@@ -28,7 +28,7 @@ commands:
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
             SUCCESS = $(curl --insecure https://kvdb.io/Av2gLHMmaQRinmszBBonh2/migration_<<parameters.workflow-id>> -d '1')
-            if(($SUCCESS==1)); 
+            if((${SUCCESS}==1)); 
             then
               cd ~/project/backend
               npm install
@@ -169,7 +169,7 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       - destroy-environment:
-          workflow-id:  $CIRCLE_WORKFLOW_ID:0:7
+          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7}
 
   configure-infrastructure:
     docker:
@@ -191,7 +191,7 @@ jobs:
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment:
-          workflow-id:  $CIRCLE_WORKFLOW_ID:0:7  
+          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7}  
 
   run-migrations:
     docker:
@@ -223,9 +223,9 @@ jobs:
               curl --insecure https://kvdb.io/Av2gLHMmaQRinmszBBonh2/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       - revert-migrations:
-          workflow-id:  $CIRCLE_WORKFLOW_ID:0:7
+          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7}
       - destroy-environment:
-          workflow-id:  $CIRCLE_WORKFLOW_ID:0:7  
+          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7} 
      # Here's where you will add some code to rollback on failure      
 
   deploy-frontend:
@@ -274,7 +274,7 @@ jobs:
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
             # your code here
       - destroy-environment:
-          workflow-id:  $CIRCLE_WORKFLOW_ID:0:7 
+          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7}
       # Here's where you will add some code to rollback on failure      
                     
   deploy-backend:
@@ -313,7 +313,7 @@ jobs:
             ansible-playbook -i inventory.txt deploy-backend.yml
             # your code here
       - destroy-environment:
-          workflow-id:  $CIRCLE_WORKFLOW_ID:0:7 
+          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7} 
       # Here's where you will add some code to rollback on failure  
 
   smoke-test:
@@ -360,7 +360,7 @@ jobs:
             fi
             # your code here
       - destroy-environment:
-          workflow-id:  $CIRCLE_WORKFLOW_ID:0:7 
+          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7} 
 #       # Here's where you will add some code to rollback on failure  
 
 #   cloudfront-update:
