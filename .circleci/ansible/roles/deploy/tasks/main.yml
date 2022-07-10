@@ -45,4 +45,3 @@
     npm install --force
     pm2 stop all
     pm2 start npm -- start
-    pm2 logs npm
