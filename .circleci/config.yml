@@ -307,6 +307,7 @@ jobs:
             npm i --force
             npm audit fix --audit-level=critical --force
             npm run build
+            echo "I run the build successfully"
             cd ..
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
