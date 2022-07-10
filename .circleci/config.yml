@@ -240,8 +240,9 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yum -y install wget tar gzip python37
-            yum -y install nodejs14
+            yum -y install wget curl tar gzip python37
+            curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash -
+            yum install -y nodejs
             python3 --version
             # # your code here
       - attach_workspace:
@@ -256,6 +257,7 @@ jobs:
                 --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --output text
               )
+            echo "Backend IP----- ${BACKEND_IP}"
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
             echo "API_URL = ${API_URL}"
