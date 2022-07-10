@@ -33,7 +33,7 @@ commands:
             if curl --insecure "https://kvdb.io/Av2gLHMmaQRinmszBBonh2/migration_<<parameters.workflow-id>>" 
             then
               cd ~/project/backend
-              npm install
+              npm install --legacy-peer-deps
               npm run migrations:revert
             #  Add revert code here. You can find this in the Getting Started section.
               # exit 1
@@ -365,10 +365,10 @@ jobs:
               return 1
             fi
             # your code here
-      - destroy-environment:
-          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7}
-      - revert-migrations:
-          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7}
+      # - destroy-environment:
+      #     workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7}
+      # - revert-migrations:
+      #     workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7}
 #       # Here's where you will add some code to rollback on failure  
 
 #   cloudfront-update:
