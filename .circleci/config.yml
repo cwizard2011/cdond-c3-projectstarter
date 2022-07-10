@@ -305,6 +305,7 @@ jobs:
             cd backend
             npm audit fix --force
             npm i --force
+            npm audit fix --audit-level=critical --force
             npm run build
             cd ..
             tar -C backend -czvf artifact.tar.gz .
