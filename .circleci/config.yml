@@ -295,17 +295,16 @@ jobs:
           command: |
             apk add --update ansible
             pip install awscli
-            apk add --no-cache tar
-            apk add --no-cache gzip
-            apk add --update nodejs npm
+            apk add --update --no-cache tar gzip nodejs npm
             # your code here
       - run:
           name: Deploy backend
           command: |
             cd backend
             npm audit fix --force
-            npm i --legacy-peer-deps
             npm audit fix --audit-level=critical --force
+            echo " I want to start installing>>>"
+            npm i --force
             echo " I want to start building>>>"
             npm run build
             echo "I run the build successfully"
