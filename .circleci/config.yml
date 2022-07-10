@@ -303,8 +303,8 @@ jobs:
           name: Deploy backend
           command: |
             cd backend
-            echo "TYPEORM_CONNECTION = ${TYPEORM_CONNECTION}" >> backend/.env
-            cat backend/.env
+            echo "TYPEORM_CONNECTION = ${TYPEORM_CONNECTION}" >> .env
+            cat .env
             npm i --legacy-peer-deps
             npm run build
             cd ..
