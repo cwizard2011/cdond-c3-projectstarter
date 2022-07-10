@@ -302,9 +302,9 @@ jobs:
           command: |
             cd backend
             echo " I want to start installing>>>"
-            npm i --force
+            npm i
             echo " I want to start building>>>"
-            npm run build --force
+            npm run build
             echo "I run the build successfully"
             cd ..
             tar -C backend -czvf artifact.tar.gz .
