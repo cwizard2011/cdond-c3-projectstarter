@@ -259,7 +259,6 @@ jobs:
                 --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --output text
               )
-            echo "Backend IP----- ${BACKEND_IP}"
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
             echo "API_URL = ${API_URL}"
@@ -304,9 +303,8 @@ jobs:
           name: Deploy backend
           command: |
             cd backend
-            echo "Changed directory successfully"
+            npm audit fix --force
             npm i --force
-            echo "Install successfully"
             npm run build
             cd ..
             tar -C backend -czvf artifact.tar.gz .
