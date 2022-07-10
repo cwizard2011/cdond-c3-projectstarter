@@ -30,18 +30,21 @@
     state: latest
 
 - name: "Creates Directory"
+  become: true
   file:
-    path: ~/web
+    path: /home/ubuntu/backend
     state: directory
 
 - name: "extract backend files"
+  become: true
   unarchive:
     src: artifact.tar.gz
-    dest: ~/web
+    dest: /home/ubuntu/backend
 
 - name: "Start backend server"
+  become: true
   shell: |
-    cd ~/web
+    cd /home/ubuntu/backend
     npm install --force
     pm2 stop all
     pm2 start npm -- start
