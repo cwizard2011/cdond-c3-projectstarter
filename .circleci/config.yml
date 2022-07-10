@@ -301,8 +301,6 @@ jobs:
           name: Deploy backend
           command: |
             cd backend
-            npm i --force
-            npm audit fix --force
             echo " I want to start installing>>>"
             npm i
             echo " I want to start building>>>"
