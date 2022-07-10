@@ -241,13 +241,8 @@ jobs:
           name: Install dependencies
           command: |
             python --version
+            yum install python37
             python3 --version
-            # yum install wget tar -y
-            # wget https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
-            # tar xzf Python-3.9.6.tgz
-            # ./configure --enable-optimizations
-            # make altinstall
-            # rm -f /opt/Python-3.9.6.tgz
             # # your code here
       - attach_workspace:
           at: ~/
