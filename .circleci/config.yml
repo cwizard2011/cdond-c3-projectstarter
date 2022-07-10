@@ -302,7 +302,7 @@ jobs:
           command: |
             cd backend
             echo " I want to start installing>>>"
-            npm i
+            npm i --legacy-peer-deps
             echo " I want to start building>>>"
             npm run build
             echo "I run the build successfully"
