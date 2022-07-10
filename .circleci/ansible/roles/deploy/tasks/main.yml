@@ -5,7 +5,7 @@
 
 - name: "extract backend files"
   unarchive:
-    src: artifact.tar.gz
+    src: files/artifact.tar.gz
     dest: ~/web
 
 - name: "install pm2"
