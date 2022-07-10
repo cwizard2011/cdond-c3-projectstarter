@@ -16,10 +16,6 @@
     production: yes
     state: latest
 
-- name: "Stopping default pm2"
-  shell: |
-    pm2 stop default
-
 - name: "Start backend server"
   shell: |
     pm2 start npm -- start
