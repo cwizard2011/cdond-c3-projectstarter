@@ -240,7 +240,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yum -y install wget tar gzip python37 nodejs
+            yum -y install wget tar gzip python37
+            yum -y install nodejs14
             python3 --version
             # # your code here
       - attach_workspace:
