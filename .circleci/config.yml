@@ -23,7 +23,7 @@ commands:
     steps:
       - run:
           name: Revert migrations
-          # when: on_fail
+          when: on_fail
           # Add when this will run
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
@@ -418,7 +418,7 @@ workflows:
               only: [test-feature-branch]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      - run-migrations
+      - run-migrations:
           requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [run-migrations]
