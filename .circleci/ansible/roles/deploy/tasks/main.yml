@@ -43,8 +43,10 @@
 
 - name: "Start backend server"
   become: true
-  shell: |
-    cd /home/ubuntu/backend
-    npm install --force
-    pm2 stop all
-    pm2 start npm -- start
+  command: pm2 start npm --name backend start
+  args:
+    chdir: /home/ubuntu/backend
+  # shell: |
+  #   cd /home/ubuntu/backend
+  #   npm install --force
+  #   pm2 start npm -- start
