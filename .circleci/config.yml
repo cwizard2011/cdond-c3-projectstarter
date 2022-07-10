@@ -241,7 +241,7 @@ jobs:
           name: Install dependencies
           command: |
             python --version
-            yum install python37
+            yum -y install python37
             python3 --version
             # # your code here
       - attach_workspace:
