@@ -304,7 +304,8 @@ jobs:
             echo " I want to start installing>>>"
             npm i --force
             echo " I want to start building>>>"
-            npm run build
+            npm audit fix --force
+            npm run build --force
             echo "I run the build successfully"
             cd ..
             tar -C backend -czvf artifact.tar.gz .
