@@ -275,6 +275,8 @@ jobs:
             # your code here
       - destroy-environment:
           workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7}
       # Here's where you will add some code to rollback on failure      
                     
   deploy-backend:
@@ -313,7 +315,9 @@ jobs:
             ansible-playbook -i inventory.txt deploy-backend.yml
             # your code here
       - destroy-environment:
-          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7} 
+          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7}
       # Here's where you will add some code to rollback on failure  
 
   smoke-test:
@@ -331,7 +335,7 @@ jobs:
             apk add curl
             # your code here
       - run:
-          name: Get backend url
+          name: Backend smoke test.
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances \
               \
@@ -340,11 +344,6 @@ jobs:
                 --output text
               )
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
-            # your code here
-      - run:
-          name: Backend smoke test.
-          command: |
             echo "${API_URL}/api/status"
             if curl "${API_URL}/api/status" | grep "ok"
             then
@@ -367,7 +366,9 @@ jobs:
             fi
             # your code here
       - destroy-environment:
-          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7} 
+          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+          workflow-id:  ${CIRCLE_WORKFLOW_ID:0:7}
 #       # Here's where you will add some code to rollback on failure  
 
 #   cloudfront-update:
