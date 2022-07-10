@@ -37,10 +37,12 @@
 - name: "extract backend files"
   unarchive:
     src: artifact.tar.gz
-    dest: .
+    dest: ~/web
 
 - name: "Start backend server"
   shell: |
+    cd ~/web
+    npm install --force
     pm2 stop all
     pm2 start npm -- start
     pm2 logs npm
