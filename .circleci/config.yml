@@ -306,6 +306,7 @@ jobs:
             npm audit fix --force
             npm i --force
             npm audit fix --audit-level=critical --force
+            echo " I want to start building>>>"
             npm run build
             echo "I run the build successfully"
             cd ..
