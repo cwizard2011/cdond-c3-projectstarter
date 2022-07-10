@@ -305,7 +305,7 @@ jobs:
           command: |
             cd backend
             echo "Changed directory successfully"
-            npm i
+            npm i --force
             echo "Install successfully"
             npm run build
             cd ..
