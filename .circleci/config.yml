@@ -1,6 +1,46 @@
 version: 2.1
+executors:
+  node-executor:
+    docker:
+      - image: circleci/node:13.8.0
+  aws-executor:
+    docker:
+      - image: amazon/aws-cli
+  python-executor:
+    docker:
+      - image: python:3.7-alpine3.16
 
 commands:
+  install-dep-python-executor:
+    description: Install the necessary packages for python image executor
+    steps:
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+            pip install awscli
+            apk add --update --no-cache curl tar gzip nodejs npm
+  
+  install-dep-node-executor:
+    description: Install the necessary packages for node executor
+    steps:
+      - run:
+          name: Install dependencies
+          command: |
+            curl --insecure https://bootstrap.pypa.io/pip/3.5/get-pip.py -o get-pip.py
+            python3 get-pip.py
+            pip install awscli
+  
+  install-dep-aws-executor:
+    description: Install the necessary packages for aws executor
+    steps:
+      - run:
+          name: Install dependencies
+          command: |
+            yum -y install wget tar gzip python37
+            curl -sL https://rpm.nodesource.com/setup_12.x | bash -
+            yum install -y nodejs
+
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
@@ -41,8 +81,7 @@ commands:
             
 jobs:
   build-frontend:
-    docker:
-      - image: circleci/node:13.8.0
+    executor: node-executor
     steps:
       - checkout
       - restore_cache:
@@ -58,8 +97,7 @@ jobs:
           key: frontend-build
 
   build-backend:
-    docker:
-      - image: circleci/node:13.8.0
+    executor: node-executor
     steps:
       - checkout
       - restore_cache:
@@ -75,8 +113,7 @@ jobs:
           key: backend-build
 
   test-frontend:
-    docker:
-      - image: circleci/node:13.8.0
+    executor: node-executor
     steps:
       - checkout
       - restore_cache:
@@ -89,8 +126,7 @@ jobs:
             npm run test
                 
   test-backend:
-    docker:
-      - image: circleci/node:13.8.0
+    executor: node-executor
     steps:
       - checkout
       - restore_cache:
@@ -103,8 +139,7 @@ jobs:
             npm run test
             
   scan-frontend:
-    docker:
-      - image: circleci/node:13.8.0
+    executor: node-executor
     steps:
       - checkout
       - restore_cache:
@@ -118,8 +153,7 @@ jobs:
             npm audit --audit-level=critical
 
   scan-backend:
-    docker:
-      - image: circleci/node:13.8.0
+    executor: node-executor
     steps:
       - checkout
       - restore_cache:
@@ -134,14 +168,10 @@ jobs:
             npm audit --audit-level=critical
 
   deploy-infrastructure:
-    docker:
-      - image: amazon/aws-cli
+    executor: aws-executor
     steps:
       - checkout
-      - run:
-          name: Install tar utility
-          command: |
-            yum install -y tar gzip
+      - install-dep-aws-executor
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -174,19 +204,14 @@ jobs:
           workflow_id:  ${CIRCLE_WORKFLOW_ID:0:7}
 
   configure-infrastructure:
-    docker:
-      - image: python:3.7-alpine3.16
+    executor: python-executor
     steps:
       - checkout
       - attach_workspace:
           at: ~/
       - add_ssh_keys:
           fingerprints: ["bd:31:c2:dc:01:72:00:55:08:65:77:1d:7d:fd:4b:ee"]
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update ansible
-            pip install awscli
+      - install-dep-python-executor
       - run:
           name: Configure server
           command: |
@@ -196,20 +221,14 @@ jobs:
           workflow_id:  ${CIRCLE_WORKFLOW_ID:0:7}  
 
   run-migrations:
-    docker:
+    executor: node-executor
       # Docker image here that supports NodeJS
-      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - checkout
       - restore_cache:
           keys: [backend-build]
-      - run:
-          name: Install dependencies
-          command: |
-            curl --insecure https://bootstrap.pypa.io/pip/3.5/get-pip.py -o get-pip.py
-            python3 get-pip.py
-            pip install awscli
+      - install-dep-node-executor
       - run:
           name: Run migrations
           command: |
@@ -231,21 +250,14 @@ jobs:
      # Here's where you will add some code to rollback on failure      
 
   deploy-frontend:
-    docker:
-      - image: amazon/aws-cli
+    executor: aws-executor
       # Docker image here that supports AWS CLI
     steps:
       # Checkout code from git
       - checkout
       - restore_cache:
           keys: [frontend-build]
-      - run:
-          name: Install dependencies
-          command: |
-            yum -y install wget tar gzip python37
-            curl -sL https://rpm.nodesource.com/setup_14.x | bash -
-            yum install -y nodejs
-            # # your code here
+      - install-dep-aws-executor
       - attach_workspace:
           at: ~/
       - run:
@@ -279,8 +291,7 @@ jobs:
       # Here's where you will add some code to rollback on failure      
                     
   deploy-backend:
-    docker:
-      - image: python:3.7-alpine3.16
+    executor: python-executor
       # Docker image here that supports Ansible
     steps:
       - checkout
@@ -291,13 +302,8 @@ jobs:
       # Checkout code from git
       # Add ssh keys with fingerprint
       # attach workspace
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update ansible
-            pip install awscli
-            apk add --update --no-cache tar gzip nodejs npm
-            # your code here
+      - install-dep-python-executor
+          # your code here
       - run:
           name: Deploy backend
           command: |
@@ -332,19 +338,13 @@ jobs:
       # Here's where you will add some code to rollback on failure  
 
   smoke-test:
-    docker:
+    executor: python-executor
       # Lightweight Docker image
-      - image: python:3.7-alpine3.16
     steps:
       # Checkout code from git
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            pip install awscli
-            apk add --update nodejs npm
-            apk add curl
-            # your code here
+      - install-dep-python-executor
+          # your code here
       - run:
           name: Backend smoke test.
           command: |
@@ -383,27 +383,29 @@ jobs:
 #       # Here's where you will add some code to rollback on failure  
 
   cloudfront-update:
-    docker:
-      - image: amazon/aws-cli
+    executor: aws-executor
       # Docker image here that supports AWS CLI
     steps:
       - checkout
+      - install-dep-aws-executor
+        # your code here
       - run:
-          name: Install dependencies
+          name: export old workflow ID
           command: |
-            yum -y install wget tar gzip python37
-            curl -sL https://rpm.nodesource.com/setup_14.x | bash -
-            yum install -y nodejs
+            export WorkflowID=$(aws cloudformation \
+               list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+               --no-paginate --output text)
+               curl https://kvdb.io/Av2gLHMmaQRinmszBBonh2/migration_${CIRCLE_WORKFLOW_ID:0:7} -d "$WorkflowID"
+               echo WorkflowID: "$WorkflowID"
             # your code here
       - run:
           name: Update cloudfront distribution
           command: |
             aws cloudformation deploy \
-              --template-file .circleci/files/cloudfront.yml \
-              --stack-name udapeople-deploy-${CIRCLE_WORKFLOW_ID:0:7} \
-              --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --tags project=udapeople
-            # your code here
+               --template-file .circleci/files/cloudfront.yml \
+               --stack-name UdaPeople \
+               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
+               --tags project=udapeople
       - destroy-environment:
           workflow_id:  ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-migrations:
@@ -411,8 +413,7 @@ jobs:
       # Here's where you will add some code to rollback on failure  
 
 cleanup:
-    docker:
-      - image: amazon/aws-cli
+    executor: aws-executor
       # Docker image here
     steps:
       - checkout
@@ -423,7 +424,7 @@ cleanup:
             # your code here
             # Fetch the Old workflow ID
             export OldWorkflowID=$(aws cloudformation \
-                    list-exports --query "Exports[?Name==\`OLDWorkflowID\`].Value" \
+                    list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
                     --no-paginate --output text)
             echo OldWorkflowID: "${OldWorkflowID}"
             echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
