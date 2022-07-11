@@ -9,7 +9,6 @@ export class StatusController {
   status() {
     const version = this.configService.about.version;
     const environment = this.configService.about.environment;
-    console.log('Calling status API>>>>>>>>', version, environment)
     return {
       status: 'ok',
       version,
