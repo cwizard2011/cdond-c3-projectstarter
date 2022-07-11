@@ -25,11 +25,11 @@
 
 - name: "Configure systemd"
   become: true
-  shell: |
-    systemctl daemon-reload
-    systemctl enable node-exporter
-    systemctl start node-exporter
-    systemctl status node-exporter
+  systemd:
+    state: enable
+    daemon_reload: yes
+    name: node_exporter
+    enabled: yes
 
 - name: "enable node_exporter service"
   become: true
