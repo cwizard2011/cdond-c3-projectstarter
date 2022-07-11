@@ -410,7 +410,7 @@ jobs:
       - checkout
       # Checkout code from git
       - run:
-          name: Get old stack workflow id
+          name: Fetch OldStack Workflow ID
           command: |
             # your code here
             # Fetch the Old workflow ID
