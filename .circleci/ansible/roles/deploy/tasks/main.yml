@@ -13,10 +13,6 @@
   become: true
   apt:
     autoremove: yes
-
-- name: install node
-  shell: |
-    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - && sudo apt-get install -y nodejs
 # - name: "install dependencies."
 #   become: true
 #   apt:
