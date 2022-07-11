@@ -1,0 +1,51 @@
+---
+- name: "update packages."
+  become: true
+  apt:
+    update_cache: yes
+
+- name: "upgrade packages"
+  become: true
+  apt:
+    upgrade: yes
+
+- name: remove dependencies that are no longer required
+  become: true
+  apt:
+    autoremove: yes
+# - name: "install dependencies."
+#   become: true
+#   apt:
+#     name: ["nodejs", "npm"]
+#     state: latest
+#     update_cache: yes
+
+- name: "install pm2"
+  become: yes
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: latest
+
+- name: "Creates Directory"
+  become: true
+  file:
+    path: /home/ubuntu/backend
+    state: directory
+
+- name: "extract backend files"
+  become: true
+  unarchive:
+    src: artifact.tar.gz
+    dest: /home/ubuntu/backend
+
+- name: "Start backend server"
+  become: true
+  command: pm2 start npm --name "backend" -- start
+  args:
+    chdir: /home/ubuntu/backend
+  # shell: |
+  #   cd /home/ubuntu/backend
+  #   npm install --force
+  #   pm2 start npm -- start
