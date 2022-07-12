@@ -52,9 +52,9 @@ commands:
           when: on_fail
           command: |
             echo  echo "Destroying environment: << parameters.workflow_id >> "
-            # aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
-            # aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflow_id>>
-            # aws cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.workflow_id>>
+            aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
+            aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflow_id>>
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.workflow_id>>
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -210,7 +210,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - add_ssh_keys:
-          fingerprints: ["82:33:69:ae:15:64:37:ae:8f:11:28:2c:14:9d:00:4b"]
+          fingerprints: ["d6:9f:27:e4:a6:0d:23:85:15:8d:08:47:7c:17:c7:04"]
       - install-dep-python-executor
       - run:
           name: Configure server
@@ -298,7 +298,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - add_ssh_keys:
-          fingerprints: ["82:33:69:ae:15:64:37:ae:8f:11:28:2c:14:9d:00:4b"]
+          fingerprints: ["d6:9f:27:e4:a6:0d:23:85:15:8d:08:47:7c:17:c7:04"]
       # Checkout code from git
       # Add ssh keys with fingerprint
       # attach workspace
