@@ -210,7 +210,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - add_ssh_keys:
-          fingerprints: ["d6:9f:27:e4:a6:0d:23:85:15:8d:08:47:7c:17:c7:04"]
+          fingerprints: ["db:9c:f5:85:7d:ee:d7:07:28:e0:d5:69:64:f1:6c:c7"]
       - install-dep-python-executor
       - run:
           name: Configure server
@@ -298,7 +298,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - add_ssh_keys:
-          fingerprints: ["d6:9f:27:e4:a6:0d:23:85:15:8d:08:47:7c:17:c7:04"]
+          fingerprints: ["db:9c:f5:85:7d:ee:d7:07:28:e0:d5:69:64:f1:6c:c7"]
       # Checkout code from git
       # Add ssh keys with fingerprint
       # attach workspace
